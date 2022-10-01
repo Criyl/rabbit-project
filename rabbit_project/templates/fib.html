@@ -1,0 +1,15 @@
+<div class="container container-small sign-up-form" style="color: rgb(0, 0, 0)">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn btn-primary" type="submit" value="Submit">
+    </form>
+</div>
+
+<ul>
+    {% for fib in fibs %}
+    <li>{{fib.index}} -> {{fib.value}} ({{ fib.created }})</li>
+    {% empty %}
+    <li> No Fibonacci Numbers Processed </li>
+    {% endfor %}
+</ul>

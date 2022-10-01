@@ -1,0 +1,28 @@
+services:
+  app:
+    build: ./rabbit_project
+    ports:
+      - "8000:8000"
+
+  rabbitmq:
+    image: rabbitmq:3
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=pass
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  worker_0:
+    build:
+      context: ./rabbit_project
+      dockerfile: ../celery_0/Dockerfile
+    environment:
+      rabbitmq_uri: amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
+networks:
+  default:
+    name: internal
+    external: false
