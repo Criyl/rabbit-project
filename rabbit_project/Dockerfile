@@ -12,4 +12,4 @@ RUN . .venv/bin/activate &&\
     python -m pip install -r requirements.txt
 
 COPY . .
-ENTRYPOINT . .venv/bin/activate && python manage.py migrate && python manage.py runserver 0.0.0.0:8000
+ENTRYPOINT . .venv/bin/activate && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000

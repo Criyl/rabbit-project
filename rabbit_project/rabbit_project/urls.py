@@ -19,5 +19,5 @@ from core import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("/", views.FibView.as_view())
+    path("", views.FibView.as_view())
 ]

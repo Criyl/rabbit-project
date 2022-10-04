@@ -22,6 +22,15 @@ services:
     depends_on:
       - rabbitmq
 
+  worker_s:
+    build:
+      context: ./rabbit_project
+      dockerfile: ../celery_s/Dockerfile
+    environment:
+      rabbitmq_uri: amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
 networks:
   default:
     name: internal

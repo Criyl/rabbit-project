@@ -1,27 +1,29 @@
+from tokenize import Double
 from celery import shared_task
 import time
 
-from core.models import Fibonacci
 
-
-@shared_task()
+@shared_task
 def calculate_fibonacci(num: int) -> int:
-    if num <= 1:
+    if num <= 0:
         return 0
-    if num <= 3:
+    if num <= 2:
         return 1
     result = calculate_fibonacci(num-1) + calculate_fibonacci(num-2)
     return result
 
 
 @shared_task
-def factorial(num: int) -> int:
+def calculate_factorial(num: int) -> int:
     if num < 1:
         return 1
-    return num*factorial(num-1)
+    result = num * calculate_factorial(num-1)
+    return result
 
 
 @shared_task
-def sleep(seconds: float) -> bool:
-    time.sleep(seconds)
-    return True
+def celery_sleep(sec: int) -> int:
+    t = time.process_time()
+    time.sleep(sec)
+    elapsed_time = time.process_time() - t
+    return elapsed_time*1000

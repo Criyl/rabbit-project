@@ -1,0 +1,18 @@
+version: '3'
+
+tasks:
+  up:
+    desc: Build and deploy docker compose
+    cmds: 
+      - docker compose up --build -d 
+      - echo "Application hosted at http://localhost:8000/"
+
+  down:
+    desc: Tear down docker compose
+    cmds: 
+      - docker compose down
+
+  monitor_queues:
+    desc: Monitor all celery queues managed by rabbitmq
+    cmds: 
+      - docker compose exec rabbitmq watch -n .5 rabbitmqctl list_queues

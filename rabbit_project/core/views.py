@@ -1,11 +1,9 @@
-from django.contrib.auth.models import User
-from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.shortcuts import redirect
 
 from core.forms import FibForm
-from core.tasks import calculate_fibonacci
-from core.models import Fibonacci
+from core.tasks import calculate_fibonacci, calculate_factorial, celery_sleep
+from core.models import ResultRecord
 
 
 class FibView(FormView):
@@ -13,15 +11,33 @@ class FibView(FormView):
     form_class = FibForm
 
     def form_valid(self, form):
-        num = form.cleaned_data.get('num')
+        number = form.cleaned_data.get('number')
+        task_queue = form.cleaned_data.get('queue')
+        task_method = form.cleaned_data.get('method')
+        multiple = form.cleaned_data.get('multiple')
 
-        result = calculate_fibonacci.s(num).delay().get()
-        calculate_fibonacci.s(num).apply_async()
-        print(result)
-        Fibonacci.objects.create(index=num, value=result).save()
+        func = calculate_fibonacci
+        if task_method == "fib":
+            func = calculate_fibonacci
+        elif task_method == "fact":
+            func = calculate_factorial
+        elif task_method == "sleep":
+            func = celery_sleep
+
+        async_results = []
+        for i in range(multiple):
+            async_results += [func.s(number).apply_async(queue=task_queue)]
+        for i in range(multiple):
+            ResultRecord.objects.create(
+                    index=number,
+                    method=task_method,
+                    value=async_results[i].get()
+                ).save()
+            redirect('.')
+
         return redirect('.')
 
     def get_context_data(self, **kwargs):
         context = super(FibView, self).get_context_data(**kwargs)
-        context['fibs'] = Fibonacci.objects.all()
+        context['results'] = ResultRecord.objects.all()
         return context

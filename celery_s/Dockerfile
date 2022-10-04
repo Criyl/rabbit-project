@@ -14,4 +14,4 @@ RUN . .venv/bin/activate &&\
     python -m pip install -r requirements.txt
 
 COPY . .
-ENTRYPOINT . .venv/bin/activate && celery -A rabbit_project worker -Q default -l info
+ENTRYPOINT . .venv/bin/activate && celery -A rabbit_project worker -Q special,default -l info

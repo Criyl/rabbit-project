@@ -6,10 +6,11 @@
     </form>
 </div>
 
+Records
 <ul>
-    {% for fib in fibs %}
-    <li>{{fib.index}} -> {{fib.value}} ({{ fib.created }})</li>
+    {% for result in results %}
+    <li>{{result}}</li>
     {% empty %}
-    <li> No Fibonacci Numbers Processed </li>
+    <li> No Records Available </li>
     {% endfor %}
 </ul>
